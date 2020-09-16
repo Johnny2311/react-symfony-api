@@ -27,6 +27,10 @@ class Worker extends React.Component {
     this.getWorker(this.props.match.params.id);
   }
 
+  componentWillUnmount () {
+    WorkerDataService.cancel();
+  }
+
   handleChange(e) {
     this.setState({
       [e.target.name]: e.target.value

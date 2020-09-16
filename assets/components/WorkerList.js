@@ -23,7 +23,10 @@ class WorkersList extends React.Component {
   componentDidMount() {
     this.retrieveWorkers();
   }
-  
+
+  componentWillUnmount () {
+    WorkerDataService.cancel();
+  }
 
   onChangeSearchName(e) {
     this.setState({searchName: e.target.value});
