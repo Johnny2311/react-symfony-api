@@ -9,11 +9,11 @@ const get = id => {
   return http.get(`/workers/${id}`);
 };
 
-const create = (data, file) => {
+const create = (data) => {
   return http.post("/workers", data);
 };
 
-const update = (id, data, file) => {
+const update = (id, data) => {
   return http.put(`/workers/${id}`, data);
 };
 
@@ -29,14 +29,6 @@ const findByName = name => {
   return http.get(`/workers?name=${name}`);
 };
 
-const uploadFile = (id, file) => {
-    return axios.create({
-        baseURL: "https://127.0.0.1:8000/api",
-        headers: {
-          "Content-type": "multipart/form-data"
-        }
-    }).post(`/workers/photo/${id}`, file);
-};
 
 export default {
   getAll,
@@ -45,6 +37,5 @@ export default {
   update,
   remove,
   removeAll,
-  findByName,
-  uploadFile
+  findByName
 };
