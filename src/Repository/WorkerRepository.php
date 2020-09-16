@@ -38,6 +38,7 @@ class WorkerRepository extends ServiceEntityRepository
         $this->manager->persist($newWorker);
         $this->manager->flush();
 
+        return $newWorker;
     }
 
     public function updateWorker(Worker $worker): Worker

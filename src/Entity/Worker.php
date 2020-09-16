@@ -213,7 +213,7 @@ class Worker
         return [
             'id'=> $this->getId(),
             'name' => $this->getName(),
-            'birthdate' => $this->getBirthdate(),
+            'birthdate' => $this->getBirthdate()->format('d/m/Y'),
             'address' => $this->getAddress(),
             'phone' => $this->getPhone(),
             'email' => $this->getEmail(),

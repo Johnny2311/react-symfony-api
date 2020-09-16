@@ -22,70 +22,78 @@ class WorkerController extends AbstractController
 
 
     /**
-     * @Route("/workers/photo/{id}", name="add_worker_photo", methods={"POST"})
+     * @Route("/api/workers/photo/{id}", name="add_worker_photo", methods={"POST"})
      */    
     public function addPhoto($id, Request $request) : JsonResponse
     {
         $worker = $this->workerRepository->findOneBy(['id' => $id]);
         $file = $request->files->get('photoFile');
         
-        if (empty($worker))
-            return new JsonResponse(['status' => 'Worker do not exists!'], JsonResponse::HTTP_BAD_REQUEST);
+        if (!$worker)
+            throw $this->createNotFoundException('Unable to find Worker.');
 
         $worker->setPhotoFile($file);
-        $this->workerRepository->updateWorker($worker);
+        $worker = $this->workerRepository->updateWorker($worker);
 
-        return new JsonResponse(['status' => 'Photo added!'], JsonResponse::HTTP_OK);
+        $path = $this->helper->asset($worker);
+
+        $data = [
+            'id' => $worker->getId(),
+            'name' => $worker->getName(),
+            'birthdate' => $worker->getBirthdate()->format('d//m/Y'),
+            'address' => $worker->getAddress(),
+            'phone' => $worker->getPhone(),
+            'email' => $worker->getEmail(),
+            'dniNumber' => $worker->getDniNumber(),
+            'deparment' => $worker->getDeparment(),
+            'photoFile' => $path,
+        ];
+
+        return new JsonResponse($data, JsonResponse::HTTP_OK);
     }
 
 
     /**
-     * @Route("/workers", name="add_worker", methods={"POST"})
+     * @Route("/api/workers", name="add_worker", methods={"POST"})
      */
     public function addWorker(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
-        //if is not set, assign null
-        $name = $data['name'] ?? null;
-        $birthdate = empty($data['birthdate']) ? null : new \DateTime($data['birthdate']);
-        $address = $data['address'] ?? null;
-        $phone = $data['phone'] ?? null;
-        $email = $data['email'] ?? null;
-        $dniNumber = $data['dniNumber'] ?? null;
-        $deparment = $data['deparment'] ?? null;
-
-        // $photoFile = $request->files->get('photoFile');
-
-        if (empty($name) || empty($birthdate) || empty($address) ||
-            empty($email) || empty($dniNumber) || empty($deparment)) 
-            return new JsonResponse(['status' => 'Empty NOT NULL prameter'], JsonResponse::HTTP_BAD_REQUEST);
+        $name = $data['name'];
+        $birthdate = \DateTime::createFromFormat('d/m/Y', $data['birthdate']);
+        $address = $data['address'];
+        $phone = $data['phone'];
+        $email = $data['email'];
+        $dniNumber = $data['dniNumber'];
+        $deparment = $data['deparment'];
 
         $repetedDni = $this->workerRepository->findOneBy(['dniNumber' => $dniNumber]);
-        if (!empty($repetedDni))
+        if ($repetedDni)
             return new JsonResponse(['status' => 'DNI number already present'], JsonResponse::HTTP_BAD_REQUEST);
         
-        $this->workerRepository->saveWorker($name, $birthdate, $address, $phone, $email, $dniNumber, $deparment);            
+        $newWorker = $this->workerRepository->saveWorker($name, $birthdate, $address, $phone, $email, $dniNumber, $deparment);            
 
-        return new JsonResponse(['status' => 'Worker created!'], JsonResponse::HTTP_CREATED);
+        //return the ID to add a photo later (if any)
+        return new JsonResponse(['id' =>  $newWorker->getId()], JsonResponse::HTTP_CREATED);
     }
 
     /**
-     * @Route("/workers/{id}", name="get_one_worker", methods={"GET"})
+     * @Route("/api/workers/{id}", name="get_one_worker", methods={"GET"})
      */
     public function getById($id): JsonResponse
     {
-        $worker = $this->workerRepository->findOneBy(['id' => $id]);
+        $worker = $this->workerRepository->find($id);
         
         $path = $this->helper->asset($worker);
 
-        if (empty($worker))
-            return new JsonResponse(['status' => 'Worker do not exists!'], JsonResponse::HTTP_BAD_REQUEST);
+        if (!$worker)
+            throw $this->createNotFoundException('Unable to find Worker.');
 
         $data = [
             'id' => $worker->getId(),
             'name' => $worker->getName(),
-            'birthdate' => $worker->getBirthdate(),
+            'birthdate' => $worker->getBirthdate()->format('d//m/Y'),
             'address' => $worker->getAddress(),
             'phone' => $worker->getPhone(),
             'email' => $worker->getEmail(),
@@ -98,14 +106,11 @@ class WorkerController extends AbstractController
     }
 
     /**
-     * @Route("/workers", name="get_all_workers", methods={"GET"})
+     * @Route("/api/workers", name="get_all_workers", methods={"GET"})
      */
     public function getAll(): JsonResponse
     {
         $workers = $this->workerRepository->findAll();
-
-        if (empty($workers))
-            return new JsonResponse(['status' => 'There are no workers!'], JsonResponse::HTTP_BAD_REQUEST);
         
         $data = [];
 
@@ -115,7 +120,7 @@ class WorkerController extends AbstractController
             $data[] = [
                 'id' => $worker->getId(),
                 'name' => $worker->getName(),
-                'birthdate' => $worker->getBirthdate(),
+                'birthdate' => $worker->getBirthdate()->format('d//m/Y'),
                 'address' => $worker->getAddress(),
                 'phone' => $worker->getPhone(),
                 'email' => $worker->getEmail(),
@@ -129,24 +134,24 @@ class WorkerController extends AbstractController
     }
 
     /**
-     * @Route("/workers/{id}", name="update_worker", methods={"PUT"})
+     * @Route("/api/workers/{id}", name="update_worker", methods={"PUT"})
      */
     public function updateById($id, Request $request): JsonResponse
     {
         $worker = $this->workerRepository->findOneBy(['id' => $id]);
 
-        if (empty($worker))
-            return new JsonResponse(['status' => 'Worker do not exists!'], JsonResponse::HTTP_BAD_REQUEST);
+        if (!$worker)
+            throw $this->createNotFoundException('Unable to find Worker.');
 
         $data = json_decode($request->getContent(), true);       
 
-        empty($data['name']) ? true : $worker->setName($data['name']);
-        empty($data['birthdate']) ? true : $worker->setBirthdate(new \DateTime($data['birthdate']));
-        empty($data['address']) ? true : $worker->setAddress($data['address']);
-        empty($data['phone']) ? true : $worker->setPhone($data['phone']);
-        empty($data['email']) ? true : $worker->setEmail($data['email']);
-        empty($data['dniNumber']) ? true : $worker->setDniNumber($data['dniNumber']);
-        empty($data['deparment']) ? true : $worker->setDeparment($data['deparment']);
+        $worker->setName($data['name']);
+        $worker->setBirthdate(\DateTime::createFromFormat('d/m/Y', $data['birthdate']));
+        $worker->setAddress($data['address']);
+        $worker->setPhone($data['phone']);
+        $worker->setEmail($data['email']);
+        $worker->setDniNumber($data['dniNumber']);
+        $worker->setDeparment($data['deparment']);
 
         $updatedWorker = $this->workerRepository->updateWorker($worker);
         $updatedWorkerArray = $updatedWorker->toArray();
@@ -157,21 +162,30 @@ class WorkerController extends AbstractController
     }
 
     /**
-     * @Route("/workers/{id}", name="delete_worker", methods={"DELETE"})
+     * @Route("/api/workers/{id}", name="delete_worker", methods={"DELETE"})
      */
     public function deleteWorker($id): JsonResponse
     {
-        $worker = $this->workerRepository->findOneBy(['id' => $id]);
+        $worker = $this->workerRepository->find($id);
 
-        if (empty($worker))
-            return new JsonResponse(['status' => 'Worker do not exists!'], JsonResponse::HTTP_BAD_REQUEST);        
+        if (!$worker)
+            throw $this->createNotFoundException('Unable to find Worker.');       
 
         $this->workerRepository->removeWorker($worker);
 
         return new JsonResponse(['status' => 'Worker deleted!'], JsonResponse::HTTP_OK);      
+    }
+
+    /**
+     * @Route("/", name="home")
+     */
+    public function index()
+    {
+        return $this->render('/index.html.twig');
     }
     
 
 
 
 }
+    
