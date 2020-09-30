@@ -8,12 +8,11 @@ import WorkerList from "./components/WorkerList";
 
 function App() {
   return (
-    <Router>
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <a href="/workers" className="navbar-brand">
+          <Link to={"/"} className="navbar-brand">
             Enterprise-X
-          </a>
+          </Link>
           <div className="navbar-nav mr-auto">
             <li className="nav-item">
               <Link to={"/workers"} className="nav-link">
@@ -30,13 +29,12 @@ function App() {
 
         <div className="container mt-3">
           <Switch>
-            <Route exact path={["/", "/workers"]} component={WorkerList} />
+            <Route exact path={"/workers"} component={WorkerList} />
             <Route exact path="/add" component={AddWorker} />
-            <Route path="/workers/:id" component={Worker} />
+            <Route exact path="/workers/:id" component={Worker} />
           </Switch>
         </div>
       </div>
-    </Router>
   );
 }
 

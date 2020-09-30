@@ -25,7 +25,7 @@ class AddWorker extends React.Component {
   }
 
   handleInputChange(event) {
-    this.setState({[event.target.name]: event.target.value});
+    this.setState({worker: {...this.state.worker, [event.target.name]: event.target.value}});
   }
 
   saveWorker() {
@@ -74,9 +74,9 @@ class AddWorker extends React.Component {
                 className="form-control"
                 id="name"
                 required
-                value={this.state.worker.name}
-                onChange={this.handleInputChange}
+                value={this.state.worker.name}                
                 name="name"
+                onChange={this.handleInputChange}
               />
             </div>
             
@@ -88,8 +88,8 @@ class AddWorker extends React.Component {
                 id="birthdate"
                 required
                 value={this.state.worker.birthdate}
-                onChange={this.handleInputChange}
                 name="birthdate"
+                onChange={this.handleInputChange}
               />
             </div>
   
@@ -101,8 +101,8 @@ class AddWorker extends React.Component {
                 id="address"
                 required
                 value={this.state.worker.address}
-                onChange={this.handleInputChange}
                 name="address"
+                onChange={this.handleInputChange}
               />
             </div>
   
@@ -113,8 +113,8 @@ class AddWorker extends React.Component {
                 className="form-control"
                 id="phone"
                 value={this.state.worker.phone}
-                onChange={this.handleInputChange}
                 name="phone"
+                onChange={this.handleInputChange}
               />
             </div>
   
@@ -126,8 +126,8 @@ class AddWorker extends React.Component {
                 id="email"
                 required
                 value={this.state.worker.email}
-                onChange={this.handleInputChange}
                 name="email"
+                onChange={this.handleInputChange}
               />
             </div>
   
@@ -139,8 +139,8 @@ class AddWorker extends React.Component {
                 id="dniNumber"
                 required
                 value={this.state.worker.dniNumber}
-                onChange={this.handleInputChange}
                 name="dniNumber"
+                onChange={this.handleInputChange}
               />
             </div>
   
@@ -152,8 +152,8 @@ class AddWorker extends React.Component {
                 id="deparment"
                 required
                 value={this.state.worker.deparment}
-                onChange={this.handleInputChange}
                 name="deparment"
+                onChange={this.handleInputChange}
               />
             </div>
   

@@ -3,13 +3,17 @@ import axios from 'axios';
 
 const CancelToken = axios.CancelToken;
 let ajaxRequest = null;
-
-const prepare = () => {
+const cancel = () => {
   if (ajaxRequest) {
     ajaxRequest.cancel();
   }
+}
+
+const prepare = () => {
+  cancel();
   ajaxRequest = CancelToken.source();
 };
+
 
 const getAll = () => {
   prepare();
@@ -46,11 +50,7 @@ const findByName = name => {
   return http.get(`/workers?name=${name}`, {cancelToken: ajaxRequest.token});
 };
 
-const cancel = () => {
-  if (ajaxRequest) {
-    ajaxRequest.cancel();
-  }
-}
+
 
 
 export default {

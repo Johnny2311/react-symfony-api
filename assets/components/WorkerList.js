@@ -35,7 +35,7 @@ class WorkersList extends React.Component {
   retrieveWorkers() {
     WorkerDataService.getAll()
       .then(response => {
-        this.setState({workers: response.data});
+        this.setState({workers: response.data, loading: false});
         console.log(response.data);
       })
       .catch(e => {
@@ -78,6 +78,7 @@ class WorkersList extends React.Component {
   }
 
   render() {
+    const workers = this.state.workers;
     return (
       <div className="list row">
         <div className="col-md-8">
@@ -104,13 +105,13 @@ class WorkersList extends React.Component {
           <h4>Workers List</h4>
   
           <ul className="list-group">
-            {this.state.workers && this.state.workers.map((worker, index) => (
+            {workers && workers.map((worker, index) => (
                 <li
                   className={
                     "list-group-item " + (index === this.state.currentIndex ? "active" : "")
                   }
                   onClick={() => this.setActiveWorker(worker, index)}
-                  key={index}
+                  key={worker.dniNumber}
                 >
                   {worker.name}
                 </li>

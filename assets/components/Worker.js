@@ -6,7 +6,7 @@ class Worker extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: undefined,
+      id: null,
       name: "",
       birthdate: "",
       address: "",
@@ -17,8 +17,8 @@ class Worker extends React.Component {
     };
 
     this.getWorker = this.getWorker.bind(this);
-    this.updateWoker = this.updateWorker.bind(this);
-    this.deleteWorker = this.getWorker.bind(this);
+    this.updateWorker = this.updateWorker.bind(this);
+    this.deleteWorker = this.deleteWorker.bind(this);
     this.handleChange = this.handleChange.bind(this);
 
   }
@@ -94,7 +94,7 @@ class Worker extends React.Component {
                   id="name"
                   name="name"
                   value={this.state.name}
-                  onChange={this.handleClick}
+                  onChange={this.handleChange}
                 />
               </div>
               <div className="form-group">
@@ -105,7 +105,7 @@ class Worker extends React.Component {
                   id="birthdate"
                   name="birthdate"
                   value={this.state.birthdate}
-                  onChange={this.handleClick}
+                  onChange={this.handleChange}
                 />
               </div>
               <div className="form-group">
@@ -116,7 +116,7 @@ class Worker extends React.Component {
                   id="address"
                   name="address"
                   value={this.state.address}
-                  onChange={this.handleClick}
+                  onChange={this.handleChange}
                 />
               </div>
               <div className="form-group">
@@ -127,7 +127,7 @@ class Worker extends React.Component {
                   id="phone"
                   name="phone"
                   value={this.state.phone}
-                  onChange={this.handleClick}
+                  onChange={this.handleChange}
                 />
               </div>
               <div className="form-group">
@@ -138,7 +138,7 @@ class Worker extends React.Component {
                   id="email"
                   name="email"
                   value={this.state.email}
-                  onChange={this.handleClick}
+                  onChange={this.handleChange}
                 />
               </div>
               <div className="form-group">
@@ -149,7 +149,7 @@ class Worker extends React.Component {
                   id="dniNumber"
                   name="dniNumber"
                   value={this.state.dniNumber}
-                  onChange={this.handleClick}
+                  onChange={this.handleChange}
                 />
               </div>
               <div className="form-group">
@@ -160,7 +160,7 @@ class Worker extends React.Component {
                   id="deparment"
                   name="deparment"
                   value={this.state.deparment}
-                  onChange={this.handleClick}
+                  onChange={this.handleChange}
                 />
               </div>
   

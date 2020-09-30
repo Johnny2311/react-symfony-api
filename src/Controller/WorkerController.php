@@ -138,12 +138,13 @@ class WorkerController extends AbstractController
      */
     public function updateById($id, Request $request): JsonResponse
     {
-        $worker = $this->workerRepository->findOneBy(['id' => $id]);
+        $worker = $this->workerRepository->find($id);
 
         if (!$worker)
             throw $this->createNotFoundException('Unable to find Worker.');
 
-        $data = json_decode($request->getContent(), true);       
+        $data = json_decode($request->getContent(), true);   
+    
 
         $worker->setName($data['name']);
         $worker->setBirthdate(\DateTime::createFromFormat('d/m/Y', $data['birthdate']));
@@ -154,11 +155,8 @@ class WorkerController extends AbstractController
         $worker->setDeparment($data['deparment']);
 
         $updatedWorker = $this->workerRepository->updateWorker($worker);
-        $updatedWorkerArray = $updatedWorker->toArray();
-
-        $updatedWorkerArray['photoFile'] = $this->helper->asset($updatedWorker);
-
-        return new JsonResponse($updatedWorkerArray, JsonResponse::HTTP_OK);
+        
+        return new JsonResponse($updatedWorker->toArray(), JsonResponse::HTTP_OK);
     }
 
     /**
@@ -177,7 +175,7 @@ class WorkerController extends AbstractController
     }
 
     /**
-     * @Route("/", name="home")
+     * @Route("/{reactRouting}", name="home", defaults={"reactRouting": null})
      */
     public function index()
     {
